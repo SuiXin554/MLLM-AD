@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data and outputs (keep structure, ignore heavy artifacts)
+data/raw/*
+data/processed/*
+outputs/checkpoints/*
+outputs/logs/*
+outputs/figures/*
+
+# Keep empty dirs tracked
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/samples/.gitkeep
+!outputs/checkpoints/.gitkeep
+!outputs/logs/.gitkeep
+!outputs/figures/.gitkeep
+
+# Model artifacts
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Env files
+.env
