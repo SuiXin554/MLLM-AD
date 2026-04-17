@@ -1,0 +1,26 @@
+# Core
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.5
+pyyaml>=6.0
+
+# Vision
+pillow>=10.4
+opencv-python>=4.10
+matplotlib>=3.9
+
+# Modeling
+torch>=2.3
+transformers>=4.47
+accelerate>=1.1
+peft>=0.14
+datasets>=3.1
+bitsandbytes>=0.44
+
+# Demo & tooling
+gradio>=5.0
+tqdm>=4.66
+rich>=13.9
+
+# Optional eval helpers
+sentence-transformers>=3.3
