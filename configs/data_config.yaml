@@ -1,0 +1,23 @@
+seed: 42
+val_ratio: 0.1
+max_samples_per_dataset: null  # e.g. 5000 for quick experiments
+
+paths:
+  mvtec_root: /home/ljh/mvtecAD
+  visa_root: /home/ljh/VisA
+
+output:
+  train_jsonl: data/processed/train.jsonl
+  val_jsonl: data/processed/val.jsonl
+  stats_json: data/processed/stats.json
+
+question_templates:
+  abnormal:
+    - 图中是否存在异常？
+    - 该图像是正常样本还是异常样本？
+  defect_type:
+    - 请判断该图像的缺陷类型。
+  location:
+    - 缺陷主要位于图像哪个区域？
+  rationale:
+    - 请简要说明你的判断依据。

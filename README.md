@@ -1,0 +1,64 @@
+# MLLM-AD：工业缺陷多模态后训练项目（求职导向）
+
+> 目标：10 天内完成“可复现 + 可讲述 + 可演示”的工业多模态后训练项目。
+
+## 当前进度（第 2 轮）
+- ✅ 已完成：仓库骨架、路线决策文档、服务器运行指南。
+- ✅ 已完成：**数据构建 MVP 脚本**（支持读取 MVTec AD / VisA 并生成指令 JSONL）。
+- ⏳ 下一步：你在服务器执行数据脚本，然后我带你做 LoRA 训练脚本与评测脚本。
+
+## 1. 项目任务
+1. 是否异常：正常/异常 + 简短解释
+2. 缺陷类型：输出缺陷类型 + 理由
+3. 缺陷位置：九宫格（左上/上中/右上 ...）
+
+## 2. 推荐路线
+- 主线：VisA / MVTec AD + 自动问答构造 + Qwen2.5-VL-3B LoRA/QLoRA
+- 增强：后续可吸收 Anomaly-OV 等研究路线的评测方式
+
+## 3. 你的数据路径（已按你提供值写入配置）
+在 `configs/data_config.yaml` 中默认设置：
+- `mvtec_root: /home/ljh/mvtecAD`
+- `visa_root: /home/ljh/VisA`
+
+## 4. 快速开始（需要用户在本地/服务器执行）
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4.1 先跑数据构建
+```bash
+python scripts/prepare_data.py --config configs/data_config.yaml
+```
+
+预期输出：
+- 终端打印 `"[prepare_data] done"`
+- 生成文件：
+  - `data/processed/train.jsonl`
+  - `data/processed/val.jsonl`
+  - `data/processed/stats.json`
+
+### 4.2 跑一次健壮性检查
+```bash
+python scripts/sanity_check.py --jsonl data/processed/train.jsonl
+```
+
+预期输出：
+- `missing_required_keys=0`
+- `missing_images=0`（若不为 0，说明路径或软链接有问题）
+
+## 5. 常见问题
+1. `ModuleNotFoundError: src`  
+   解决：在仓库根目录运行命令，或执行 `export PYTHONPATH=$(pwd)`。
+2. JSONL 为空  
+   解决：检查 `configs/data_config.yaml` 里的路径是否真实存在。
+3. VisA 结构和脚本假设不一致  
+   解决：先跑 `stats.json` 看采样情况，再告诉我你的目录结构截图，我帮你改扫描规则。
+
+## 6. 下一步计划
+- [下一轮] 训练脚本（`scripts/train_lora.py`）+ 训练配置（quick/full）
+- [下一轮] 评测脚本（`scripts/evaluate.py`）+ baseline 对比
+- [后续] Gradio Demo
