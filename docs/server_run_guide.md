@@ -94,3 +94,23 @@ python scripts/sanity_check.py --jsonl data/processed/val.jsonl
 3. `missing_images > 0`
 - 检查 JSONL 中 `image` 字段是否为绝对路径
 - 检查是否有失效软链接
+
+---
+
+## Git 说明（关于“直接推送到 main”）
+当前这个 Codex 运行环境通常不会自动配置你的远程仓库凭据与 `origin`。  
+如果你要把改动推到远程 `main`，请在你本地/服务器执行：
+
+```bash
+git checkout main
+git merge --ff-only work
+git push origin main
+```
+
+如果 `main` 不存在，可先创建：
+
+```bash
+git checkout -b main
+git merge --ff-only work
+git push -u origin main
+```
