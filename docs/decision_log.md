@@ -48,3 +48,4 @@
 - 补充：`transformers 4.x` 需要 `huggingface-hub<1.0`，若为 1.x 需降级到 0.36.0。
 - 补充：`safetensors` 若出现 `_safe_open_handle` 导入错误，需强制重装同版本 wheel（0.4.5）。
 - 补充：若缺失 `bitsandbytes`，训练脚本默认自动从 QLoRA 降级为 LoRA，避免流程中断。
+- 进一步策略：将默认训练配置改为 `use_qlora=false`，先保证一键可跑，再按需切换 QLoRA。

@@ -72,6 +72,7 @@ python scripts/sanity_check.py --jsonl data/processed/train.jsonl
 python scripts/train_lora.py --config configs/train_lora.yaml
 ```
 
+当前默认配置是 **LoRA（`use_qlora: false`）**，优先保证能跑通。  
 建议先用 `configs/train_lora.yaml` 的小样本设置快速验证（`max_train_samples=3000`）。
 
 训练成功的典型标志：
@@ -107,3 +108,5 @@ pip install --force-reinstall --no-cache-dir --no-deps "safetensors==0.4.5"
 ```bash
 pip install bitsandbytes==0.44.1
 ```
+
+然后把 `configs/train_lora.yaml` 里的 `model.use_qlora` 改成 `true`。

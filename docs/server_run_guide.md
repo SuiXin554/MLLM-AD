@@ -89,6 +89,7 @@ python scripts/sanity_check.py --jsonl data/processed/val.jsonl
 python scripts/train_lora.py --config configs/train_lora.yaml
 ```
 
+当前默认是 LoRA（`use_qlora: false`），先保证稳定跑通。  
 建议先不改配置直接跑 quick 版本，确认链路通，再把 `max_train_samples` 设为 `null` 跑全量。
 
 成功标志：
@@ -146,6 +147,7 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   ```bash
   pip install bitsandbytes==0.44.1
   ```
+- 并把 `configs/train_lora.yaml` 中 `model.use_qlora` 设为 `true`
 
 ---
 

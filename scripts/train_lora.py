@@ -176,6 +176,7 @@ def build_model_and_processor(cfg: dict[str, Any]):
                 "如需 QLoRA，请安装：pip install bitsandbytes==0.44.1"
             )
             use_qlora = False
+    print(f"[train_lora] mode={'QLoRA' if use_qlora else 'LoRA'}")
 
     processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
     model = AutoModelForImageTextToText.from_pretrained(
