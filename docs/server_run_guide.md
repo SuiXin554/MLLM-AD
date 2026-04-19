@@ -114,3 +114,22 @@ git checkout -b main
 git merge --ff-only work
 git push -u origin main
 ```
+
+---
+
+## 服务器已是旧版 main 时，如何“一键更新到最新版”
+如果你的服务器目录是直接 `git clone` 的第一版 main，并且你不想处理冲突，建议使用**强制对齐**（会丢弃本地未提交修改）：
+
+```bash
+cd /path/to/MLLM-AD
+git fetch origin
+git checkout main
+git reset --hard origin/main
+git clean -fd
+```
+
+成功标志：
+- `git status` 显示 working tree clean
+- `git log --oneline -n 1` 显示最新 main 提交
+
+> 如果你服务器上有自己改过但未提交的文件，请先备份目录，再执行上述命令。
