@@ -21,6 +21,8 @@
 - `mvtec_root: /home/ljh/mvtecAD`
 - `visa_root: /home/ljh/VisA`
 
+另外已增加 `allowed_categories`，会按 **MVTec/VisA 官方类别名白名单** 过滤，自动忽略你数据目录里的多余文件夹。
+
 ## 4. 快速开始（需要用户在本地/服务器执行）
 ```bash
 python -m venv .venv
@@ -57,6 +59,8 @@ python scripts/sanity_check.py --jsonl data/processed/train.jsonl
    解决：检查 `configs/data_config.yaml` 里的路径是否真实存在。
 3. VisA 结构和脚本假设不一致  
    解决：先跑 `stats.json` 看采样情况，再告诉我你的目录结构截图，我帮你改扫描规则。
+4. 目录里有很多杂项文件夹  
+   解决：修改 `configs/data_config.yaml` 的 `allowed_categories.mvtec / allowed_categories.visa`，只保留你要训练的类别。
 
 ## 6. 下一步计划
 - [下一轮] 训练脚本（`scripts/train_lora.py`）+ 训练配置（quick/full）

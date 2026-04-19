@@ -37,3 +37,7 @@
 - 用户已具备本地数据：`/home/ljh/mvtecAD` 与 `/home/ljh/VisA`。
 - 因此优先推进“数据构建 MVP → 训练脚本 MVP”，不再停留在文档占位。
 - 新增 `scripts/prepare_data.py` 与 `scripts/sanity_check.py`，先保证数据闭环真实可执行。
+
+## 进展更新（2026-04-19）
+- 用户反馈数据目录中存在多余文件夹，新增 `allowed_categories` 白名单机制。
+- 数据构建阶段按 MVTec/VisA 标准类别过滤，避免脏目录污染训练 JSONL。

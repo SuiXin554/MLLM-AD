@@ -24,6 +24,37 @@ GRID = [
     ["左中", "中部", "右中"],
     ["左下", "下中", "右下"],
 ]
+DEFAULT_MVTEC_CATEGORIES = {
+    "bottle",
+    "cable",
+    "capsule",
+    "carpet",
+    "grid",
+    "hazelnut",
+    "leather",
+    "metal_nut",
+    "pill",
+    "screw",
+    "tile",
+    "toothbrush",
+    "transistor",
+    "wood",
+    "zipper",
+}
+DEFAULT_VISA_CATEGORIES = {
+    "candle",
+    "capsules",
+    "cashew",
+    "chewinggum",
+    "fryum",
+    "macaroni1",
+    "macaroni2",
+    "pcb1",
+    "pcb2",
+    "pcb3",
+    "pcb4",
+    "pipe_fryum",
+}
 
 
 @dataclass
@@ -42,6 +73,9 @@ class DatasetBuilder:
     def __init__(self, cfg: dict):
         self.cfg = cfg
         self.q = cfg["question_templates"]
+        allowed = cfg.get("allowed_categories", {})
+        self.allowed_mvtec = {str(x).strip() for x in allowed.get("mvtec", DEFAULT_MVTEC_CATEGORIES)}
+        self.allowed_visa = {str(x).strip() for x in allowed.get("visa", DEFAULT_VISA_CATEGORIES)}
 
     def build(self) -> tuple[list[dict], dict]:
         base = []
@@ -89,6 +123,8 @@ class DatasetBuilder:
         out: list[BaseSample] = []
         for category in sorted(p for p in root.iterdir() if p.is_dir()):
             category_name = category.name
+            if category_name not in self.allowed_mvtec:
+                continue
             for split_name in ["train", "test"]:
                 split_dir = category / split_name
                 if not split_dir.exists():
@@ -140,8 +176,10 @@ class DatasetBuilder:
             if "mask" in img.name.lower() or "ground_truth" in parts or "masks" in parts:
                 continue
 
-            is_anomaly = self._infer_is_anomaly(img)
             category = self._infer_category(root, img)
+            if category not in self.allowed_visa:
+                continue
+            is_anomaly = self._infer_is_anomaly(img)
             defect_type = self._infer_defect_type(img, is_anomaly)
             mask = self._find_mask_nearby(img)
             loc, source = self._infer_location(img, mask)
