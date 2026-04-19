@@ -12,7 +12,6 @@ import torch
 import yaml
 from PIL import Image
 from datasets import Dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
 
 def _parse_semver(version_text: str) -> tuple[int, int, int]:
@@ -28,6 +27,8 @@ def check_runtime_compat() -> None:
     torch_v = _parse_semver(torch.__version__)
     tf_v_str = importlib_metadata.version("transformers")
     tf_v = _parse_semver(tf_v_str)
+    hub_v_str = importlib_metadata.version("huggingface-hub")
+    hub_v = _parse_semver(hub_v_str)
 
     if torch_v < (2, 4, 0) and tf_v >= (5, 0, 0):
         raise RuntimeError(
@@ -35,6 +36,13 @@ def check_runtime_compat() -> None:
             f"检测到 torch={torch.__version__}, transformers={tf_v_str}。\n"
             "你不需要升级 torch，请执行以下命令降级 transformers 到 4.x：\n"
             "  pip install --upgrade --no-deps 'transformers==4.47.1' 'tokenizers==0.21.0'"
+        )
+    if tf_v < (5, 0, 0) and not ((0, 24, 0) <= hub_v < (1, 0, 0)):
+        raise RuntimeError(
+            "检测到 transformers 4.x 与 huggingface-hub 版本不兼容。\n"
+            f"当前 transformers={tf_v_str}, huggingface-hub={hub_v_str}。\n"
+            "请执行：\n"
+            "  pip install --upgrade --no-deps 'huggingface-hub==0.36.0'"
         )
 
 
@@ -120,6 +128,8 @@ class VLDataCollator:
 
 
 def build_model_and_processor(cfg: dict[str, Any]):
+    from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+
     model_name = cfg["model"]["name_or_path"]
     use_qlora = bool(cfg["model"].get("use_qlora", True))
     dtype_name = str(cfg["model"].get("torch_dtype", "bfloat16"))

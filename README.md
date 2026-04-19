@@ -85,3 +85,10 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 ```bash
 pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
 ```
+
+### 若出现 `huggingface-hub>=0.24,<1.0 is required ... but found 1.11.0`
+这是 `transformers 4.x` 与 `huggingface-hub 1.x` 冲突，执行：
+
+```bash
+pip install --upgrade --no-deps "huggingface-hub==0.36.0"
+```

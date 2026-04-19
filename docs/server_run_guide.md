@@ -125,6 +125,13 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   ```bash
   python scripts/train_lora.py --config configs/train_lora.yaml
   ```
+6. `huggingface-hub>=0.24,<1.0 is required ... but found 1.11.0`
+- 这是 `transformers 4.x` 和 `huggingface-hub 1.x` 冲突
+- 执行：
+  ```bash
+  pip install --upgrade --no-deps "huggingface-hub==0.36.0"
+  ```
+- 然后重新运行训练命令
 
 ---
 
