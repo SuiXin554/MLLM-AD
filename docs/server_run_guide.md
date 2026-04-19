@@ -139,6 +139,13 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   pip install --force-reinstall --no-cache-dir --no-deps "safetensors==0.4.5"
   ```
 - 再执行训练命令
+8. `PackageNotFoundError: No package metadata was found for bitsandbytes`
+- 说明环境里没有 bitsandbytes
+- 当前脚本默认会自动降级到普通 LoRA 继续跑
+- 若要坚持 QLoRA，请安装：
+  ```bash
+  pip install bitsandbytes==0.44.1
+  ```
 
 ---
 

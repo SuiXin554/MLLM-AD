@@ -99,3 +99,11 @@ pip install --upgrade --no-deps "huggingface-hub==0.36.0"
 ```bash
 pip install --force-reinstall --no-cache-dir --no-deps "safetensors==0.4.5"
 ```
+
+### 若出现 `PackageNotFoundError: bitsandbytes`
+脚本现在默认会自动降级到普通 LoRA 继续训练（显存占用会更高）。  
+若你想坚持 QLoRA，请安装：
+
+```bash
+pip install bitsandbytes==0.44.1
+```

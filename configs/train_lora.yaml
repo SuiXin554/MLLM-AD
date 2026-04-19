@@ -4,6 +4,7 @@ seed: 42
 model:
   name_or_path: Qwen/Qwen2.5-VL-3B-Instruct
   use_qlora: true
+  strict_qlora: false   # false: bitsandbytes 缺失时自动降级为 LoRA
   torch_dtype: bfloat16   # float16 / bfloat16
 
 data:

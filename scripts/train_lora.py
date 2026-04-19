@@ -151,17 +151,31 @@ def build_model_and_processor(cfg: dict[str, Any]):
 
     model_name = cfg["model"]["name_or_path"]
     use_qlora = bool(cfg["model"].get("use_qlora", True))
+    strict_qlora = bool(cfg["model"].get("strict_qlora", False))
     dtype_name = str(cfg["model"].get("torch_dtype", "bfloat16"))
     dtype = getattr(torch, dtype_name)
 
     quant_config = None
     if use_qlora:
-        quant_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_use_double_quant=True,
-            bnb_4bit_compute_dtype=dtype,
-        )
+        try:
+            _ = importlib_metadata.version("bitsandbytes")
+            quant_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True,
+                bnb_4bit_compute_dtype=dtype,
+            )
+        except importlib_metadata.PackageNotFoundError as e:
+            if strict_qlora:
+                raise RuntimeError(
+                    "配置要求 strict_qlora=true，但环境中未安装 bitsandbytes。\n"
+                    "请执行：pip install bitsandbytes==0.44.1"
+                ) from e
+            print(
+                "[train_lora] WARNING: bitsandbytes 未安装，自动降级为普通 LoRA（use_qlora=false）。\n"
+                "如需 QLoRA，请安装：pip install bitsandbytes==0.44.1"
+            )
+            use_qlora = False
 
     processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
     model = AutoModelForImageTextToText.from_pretrained(
