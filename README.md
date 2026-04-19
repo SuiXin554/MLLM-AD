@@ -63,6 +63,18 @@ python scripts/sanity_check.py --jsonl data/processed/train.jsonl
    解决：修改 `configs/data_config.yaml` 的 `allowed_categories.mvtec / allowed_categories.visa`，只保留你要训练的类别。
 
 ## 6. 下一步计划
-- [下一轮] 训练脚本（`scripts/train_lora.py`）+ 训练配置（quick/full）
+- [已提供] 训练脚本（`scripts/train_lora.py`）+ 训练配置（`configs/train_lora.yaml`）
 - [下一轮] 评测脚本（`scripts/evaluate.py`）+ baseline 对比
 - [后续] Gradio Demo
+
+## 7. 下一步怎么训练（需要用户在本地/服务器执行）
+```bash
+python scripts/train_lora.py --config configs/train_lora.yaml
+```
+
+建议先用 `configs/train_lora.yaml` 的小样本设置快速验证（`max_train_samples=3000`）。
+
+训练成功的典型标志：
+- 终端会先打印 LoRA 可训练参数比例；
+- 日志中出现 `loss` 持续输出；
+- `outputs/checkpoints/qwen25vl_lora/` 下出现 adapter 权重与 processor 文件。

@@ -1,0 +1,47 @@
+# LoRA/QLoRA training config for Qwen2.5-VL-3B-Instruct
+seed: 42
+
+model:
+  name_or_path: Qwen/Qwen2.5-VL-3B-Instruct
+  use_qlora: true
+  torch_dtype: bfloat16   # float16 / bfloat16
+
+data:
+  train_jsonl: data/processed/train.jsonl
+  val_jsonl: data/processed/val.jsonl
+  image_root: null         # optional prefix, keep null when image paths are absolute
+  max_train_samples: 3000  # quick run; set null for full data
+  max_val_samples: 500
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+train:
+  output_dir: outputs/checkpoints/qwen25vl_lora
+  num_train_epochs: 1
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  logging_steps: 10
+  eval_steps: 100
+  save_steps: 100
+  save_total_limit: 2
+  max_seq_length: 768
+  dataloader_num_workers: 2
+  gradient_checkpointing: true
+  bf16: true
+  fp16: false
+  report_to: none

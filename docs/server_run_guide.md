@@ -84,6 +84,20 @@ python scripts/sanity_check.py --jsonl data/processed/val.jsonl
 
 ---
 
+## 6. LoRA/QLoRA 训练（已可直接运行）
+```bash
+python scripts/train_lora.py --config configs/train_lora.yaml
+```
+
+建议先不改配置直接跑 quick 版本，确认链路通，再把 `max_train_samples` 设为 `null` 跑全量。
+
+成功标志：
+- 终端打印 LoRA trainable 参数统计；
+- 日志持续输出 `loss`；
+- `outputs/checkpoints/qwen25vl_lora/` 出现保存文件。
+
+---
+
 ## 常见报错与排查
 1. `FileNotFoundError`（找不到数据路径）
 - 检查 `configs/data_config.yaml`
@@ -96,6 +110,11 @@ python scripts/sanity_check.py --jsonl data/processed/val.jsonl
 3. `missing_images > 0`
 - 检查 JSONL 中 `image` 字段是否为绝对路径
 - 检查是否有失效软链接
+4. `CUDA out of memory`
+- 降低 `per_device_train_batch_size`
+- 提高 `gradient_accumulation_steps`
+- 降低 `max_seq_length`
+- 保持 `use_qlora: true`
 
 ---
 
