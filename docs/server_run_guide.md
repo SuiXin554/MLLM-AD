@@ -132,6 +132,13 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   pip install --upgrade --no-deps "huggingface-hub==0.36.0"
   ```
 - 然后重新运行训练命令
+7. `cannot import name '_safe_open_handle' from safetensors._safetensors_rust`
+- 这是 `safetensors` 二进制扩展与当前环境不匹配
+- 执行：
+  ```bash
+  pip install --force-reinstall --no-cache-dir --no-deps "safetensors==0.4.5"
+  ```
+- 再执行训练命令
 
 ---
 

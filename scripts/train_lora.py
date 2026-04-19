@@ -44,11 +44,30 @@ def check_runtime_compat() -> None:
             "请执行：\n"
             "  pip install --upgrade --no-deps 'huggingface-hub==0.36.0'"
         )
+    try:
+        import safetensors  # noqa: F401
+        import safetensors.torch  # noqa: F401
+    except Exception as e:  # pragma: no cover
+        raise RuntimeError(
+            "safetensors 二进制扩展加载失败（常见于 pip/conda 混装后 ABI 不一致）。\n"
+            f"原始错误: {e}\n"
+            "请执行：\n"
+            "  pip install --force-reinstall --no-cache-dir --no-deps 'safetensors==0.4.5'"
+        ) from e
 
 
 check_runtime_compat()
 
-from transformers import AutoProcessor, BitsAndBytesConfig, Trainer, TrainingArguments
+try:
+    from transformers import AutoProcessor, BitsAndBytesConfig, Trainer, TrainingArguments
+except Exception as e:  # pragma: no cover
+    if "_safe_open_handle" in str(e):
+        raise RuntimeError(
+            "transformers 导入失败，根因是 safetensors 二进制不匹配。\n"
+            "请执行：\n"
+            "  pip install --force-reinstall --no-cache-dir --no-deps 'safetensors==0.4.5'"
+        ) from e
+    raise
 
 try:
     from transformers import AutoModelForImageTextToText

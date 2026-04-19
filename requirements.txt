@@ -14,6 +14,7 @@ torch>=2.3
 transformers>=4.47,<5
 tokenizers>=0.21,<0.22
 huggingface-hub>=0.24,<1.0
+safetensors==0.4.5
 accelerate>=1.1
 peft>=0.14
 datasets>=3.1

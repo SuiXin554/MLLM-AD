@@ -92,3 +92,10 @@ pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
 ```bash
 pip install --upgrade --no-deps "huggingface-hub==0.36.0"
 ```
+
+### 若出现 `cannot import name '_safe_open_handle' from safetensors._safetensors_rust`
+这是 `safetensors` 二进制扩展损坏或 ABI 不匹配（常见于 pip/conda 混装），执行：
+
+```bash
+pip install --force-reinstall --no-cache-dir --no-deps "safetensors==0.4.5"
+```
