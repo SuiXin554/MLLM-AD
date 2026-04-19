@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata as importlib_metadata
 import json
 import random
 from dataclasses import dataclass
@@ -12,13 +13,39 @@ import yaml
 from PIL import Image
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from transformers import (
-    AutoModelForImageTextToText,
-    AutoProcessor,
-    BitsAndBytesConfig,
-    Trainer,
-    TrainingArguments,
-)
+
+
+def _parse_semver(version_text: str) -> tuple[int, int, int]:
+    clean = version_text.split("+")[0]
+    nums = clean.split(".")
+    major = int(nums[0]) if len(nums) > 0 and nums[0].isdigit() else 0
+    minor = int(nums[1]) if len(nums) > 1 and nums[1].isdigit() else 0
+    patch = int(nums[2]) if len(nums) > 2 and nums[2].isdigit() else 0
+    return major, minor, patch
+
+
+def check_runtime_compat() -> None:
+    torch_v = _parse_semver(torch.__version__)
+    tf_v_str = importlib_metadata.version("transformers")
+    tf_v = _parse_semver(tf_v_str)
+
+    if torch_v < (2, 4, 0) and tf_v >= (5, 0, 0):
+        raise RuntimeError(
+            "当前环境是 torch<2.4 + transformers>=5，transformers 会禁用 PyTorch 后端。\n"
+            f"检测到 torch={torch.__version__}, transformers={tf_v_str}。\n"
+            "你不需要升级 torch，请执行以下命令降级 transformers 到 4.x：\n"
+            "  pip install --upgrade --no-deps 'transformers==4.47.1' 'tokenizers==0.21.0'"
+        )
+
+
+check_runtime_compat()
+
+from transformers import AutoProcessor, BitsAndBytesConfig, Trainer, TrainingArguments
+
+try:
+    from transformers import AutoModelForImageTextToText
+except ImportError:  # transformers 4.x compatibility fallback
+    from transformers import AutoModelForVision2Seq as AutoModelForImageTextToText
 
 
 def parse_args() -> argparse.Namespace:
@@ -177,7 +204,7 @@ def main() -> None:
         fp16=bool(tcfg.get("fp16", False)),
         report_to=tcfg.get("report_to", "none"),
         remove_unused_columns=False,
-        eval_strategy="steps" if val_ds is not None else "no",
+        evaluation_strategy="steps" if val_ds is not None else "no",
         save_strategy="steps",
         logging_strategy="steps",
         seed=seed,

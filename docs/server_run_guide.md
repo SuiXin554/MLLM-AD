@@ -115,6 +115,16 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 - 提高 `gradient_accumulation_steps`
 - 降低 `max_seq_length`
 - 保持 `use_qlora: true`
+5. `Disabling PyTorch because PyTorch >= 2.4 is required but found 2.1.2`
+- 这是 `transformers>=5` 与 `torch==2.1.x` 不兼容导致
+- 不要升级 torch，执行：
+  ```bash
+  pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
+  ```
+- 然后重新运行：
+  ```bash
+  python scripts/train_lora.py --config configs/train_lora.yaml
+  ```
 
 ---
 

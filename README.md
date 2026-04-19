@@ -78,3 +78,10 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 - 终端会先打印 LoRA 可训练参数比例；
 - 日志中出现 `loss` 持续输出；
 - `outputs/checkpoints/qwen25vl_lora/` 下出现 adapter 权重与 processor 文件。
+
+### 若出现 `torch<2.4 + transformers>=5` 报错（你的环境就是这个情况）
+不需要升级 PyTorch，只要把 transformers 固定到 4.x：
+
+```bash
+pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
+```

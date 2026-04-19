@@ -11,7 +11,8 @@ matplotlib>=3.9
 
 # Modeling
 torch>=2.3
-transformers>=4.47
+transformers>=4.47,<5
+tokenizers>=0.21,<0.22
 accelerate>=1.1
 peft>=0.14
 datasets>=3.1
