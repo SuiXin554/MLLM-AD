@@ -51,3 +51,4 @@
 - 进一步策略：将默认训练配置改为 `use_qlora=false`，先保证一键可跑，再按需切换 QLoRA。
 - 补充：针对服务器无法连通 Hugging Face，训练配置新增本地模型路径/离线模式/镜像 endpoint 选项。
 - 补充：版本解析函数改为容错实现，避免异常元信息导致脚本在兼容性检查阶段崩溃。
+- 补充：包版本读取优先 metadata，失败时回退到 `import xxx.__version__`，避免 `transformers=None` 误判。

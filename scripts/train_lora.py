@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import importlib.metadata as importlib_metadata
 import json
 import os
@@ -27,16 +28,29 @@ def _parse_semver(version_text: str | None) -> tuple[int, int, int]:
     return major, minor, patch
 
 
+def _get_package_version(pkg_name: str) -> str | None:
+    try:
+        v = importlib_metadata.version(pkg_name)
+        if v:
+            return str(v)
+    except Exception:
+        pass
+    try:
+        mod = importlib.import_module(pkg_name.replace("-", "_"))
+        v2 = getattr(mod, "__version__", None)
+        return str(v2) if v2 else None
+    except Exception:
+        return None
+
+
 def check_runtime_compat() -> None:
     torch_v = _parse_semver(torch.__version__)
-    try:
-        tf_v_str = importlib_metadata.version("transformers")
-    except importlib_metadata.PackageNotFoundError:
+    tf_v_str = _get_package_version("transformers")
+    if not tf_v_str:
         raise RuntimeError("未检测到 transformers，请先安装：pip install transformers==4.50.3")
     tf_v = _parse_semver(tf_v_str)
-    try:
-        hub_v_str = importlib_metadata.version("huggingface-hub")
-    except importlib_metadata.PackageNotFoundError:
+    hub_v_str = _get_package_version("huggingface-hub")
+    if not hub_v_str:
         raise RuntimeError("未检测到 huggingface-hub，请先安装：pip install huggingface-hub==0.36.0")
     hub_v = _parse_semver(hub_v_str)
 

@@ -134,3 +134,8 @@ model:
 ```bash
 pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1" "huggingface-hub==0.36.0"
 ```
+
+若你已经安装了但脚本仍显示 `transformers=None`，先验证：
+```bash
+python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
+```

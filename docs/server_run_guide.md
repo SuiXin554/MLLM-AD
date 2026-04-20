@@ -165,6 +165,10 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1" "huggingface-hub==0.36.0"
   ```
 - 再重新运行训练
+- 若仍提示 `transformers=None`，执行：
+  ```bash
+  python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
+  ```
 
 ---
 
