@@ -5,6 +5,7 @@ import importlib.metadata as importlib_metadata
 import json
 import os
 import random
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -15,20 +16,28 @@ from PIL import Image
 from datasets import Dataset
 
 
-def _parse_semver(version_text: str) -> tuple[int, int, int]:
-    clean = version_text.split("+")[0]
-    nums = clean.split(".")
-    major = int(nums[0]) if len(nums) > 0 and nums[0].isdigit() else 0
-    minor = int(nums[1]) if len(nums) > 1 and nums[1].isdigit() else 0
-    patch = int(nums[2]) if len(nums) > 2 and nums[2].isdigit() else 0
+def _parse_semver(version_text: str | None) -> tuple[int, int, int]:
+    if not version_text:
+        return 0, 0, 0
+    clean = str(version_text).split("+")[0]
+    nums = re.findall(r"\d+", clean)
+    major = int(nums[0]) if len(nums) > 0 else 0
+    minor = int(nums[1]) if len(nums) > 1 else 0
+    patch = int(nums[2]) if len(nums) > 2 else 0
     return major, minor, patch
 
 
 def check_runtime_compat() -> None:
     torch_v = _parse_semver(torch.__version__)
-    tf_v_str = importlib_metadata.version("transformers")
+    try:
+        tf_v_str = importlib_metadata.version("transformers")
+    except importlib_metadata.PackageNotFoundError:
+        raise RuntimeError("未检测到 transformers，请先安装：pip install transformers==4.50.3")
     tf_v = _parse_semver(tf_v_str)
-    hub_v_str = importlib_metadata.version("huggingface-hub")
+    try:
+        hub_v_str = importlib_metadata.version("huggingface-hub")
+    except importlib_metadata.PackageNotFoundError:
+        raise RuntimeError("未检测到 huggingface-hub，请先安装：pip install huggingface-hub==0.36.0")
     hub_v = _parse_semver(hub_v_str)
 
     if torch_v < (2, 4, 0) and tf_v >= (5, 0, 0):

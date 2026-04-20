@@ -128,3 +128,9 @@ model:
 
 3) 再运行训练命令。  
 如果你有可访问镜像，也可以设置 `model.hf_endpoint`（如 `https://hf-mirror.com`）。
+
+### 若出现 `AttributeError: 'NoneType' object has no attribute 'split'`（版本检查阶段）
+执行：
+```bash
+pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1" "huggingface-hub==0.36.0"
+```

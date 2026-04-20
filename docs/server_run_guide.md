@@ -158,6 +158,13 @@ python scripts/train_lora.py --config configs/train_lora.yaml
      - `model.local_files_only: true`
   3) 重新训练
 - 若有镜像，可设置：`model.hf_endpoint: https://hf-mirror.com`
+10. `AttributeError: 'NoneType' object has no attribute 'split'`（发生在版本检查）
+- 说明某些包版本元信息异常或缺失
+- 执行：
+  ```bash
+  pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1" "huggingface-hub==0.36.0"
+  ```
+- 再重新运行训练
 
 ---
 
