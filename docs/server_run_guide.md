@@ -148,6 +148,16 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   pip install bitsandbytes==0.44.1
   ```
 - 并把 `configs/train_lora.yaml` 中 `model.use_qlora` 设为 `true`
+9. `Connection to huggingface.co timed out` / `We couldn't connect to https://huggingface.co`
+- 这是网络不可达，不是代码错误
+- 推荐离线方案：
+  1) 在可联网机器下载模型到本地目录  
+     `huggingface-cli download Qwen/Qwen2.5-VL-3B-Instruct --local-dir /home/ljh/models/Qwen2.5-VL-3B-Instruct`
+  2) 配置 `configs/train_lora.yaml`：
+     - `model.local_model_path: /home/ljh/models/Qwen2.5-VL-3B-Instruct`
+     - `model.local_files_only: true`
+  3) 重新训练
+- 若有镜像，可设置：`model.hf_endpoint: https://hf-mirror.com`
 
 ---
 

@@ -3,6 +3,11 @@ seed: 42
 
 model:
   name_or_path: Qwen/Qwen2.5-VL-3B-Instruct
+  local_model_path: null    # 例如 /home/ljh/models/Qwen2.5-VL-3B-Instruct（离线优先）
+  require_local_model: false
+  hf_endpoint: null         # 例如 https://hf-mirror.com
+  hf_token: null            # 私有模型或限流时可填
+  local_files_only: false
   use_qlora: false        # 默认先用 LoRA，减少环境依赖；稳定后再切到 true
   strict_qlora: false   # false: bitsandbytes 缺失时自动降级为 LoRA
   torch_dtype: bfloat16   # float16 / bfloat16

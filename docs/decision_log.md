@@ -49,3 +49,4 @@
 - 补充：`safetensors` 若出现 `_safe_open_handle` 导入错误，需强制重装同版本 wheel（0.4.5）。
 - 补充：若缺失 `bitsandbytes`，训练脚本默认自动从 QLoRA 降级为 LoRA，避免流程中断。
 - 进一步策略：将默认训练配置改为 `use_qlora=false`，先保证一键可跑，再按需切换 QLoRA。
+- 补充：针对服务器无法连通 Hugging Face，训练配置新增本地模型路径/离线模式/镜像 endpoint 选项。

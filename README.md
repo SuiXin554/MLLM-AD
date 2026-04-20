@@ -110,3 +110,21 @@ pip install bitsandbytes==0.44.1
 ```
 
 然后把 `configs/train_lora.yaml` 里的 `model.use_qlora` 改成 `true`。
+
+### 若出现 `Connection to huggingface.co timed out`（你现在就是这个问题）
+优先改成**本地模型路径**（离线模式）：
+
+1) 先在可联网机器下载模型到目录（需要用户在可联网机器执行）：
+```bash
+huggingface-cli download Qwen/Qwen2.5-VL-3B-Instruct --local-dir /home/ljh/models/Qwen2.5-VL-3B-Instruct
+```
+
+2) 在 `configs/train_lora.yaml` 中设置：
+```yaml
+model:
+  local_model_path: /home/ljh/models/Qwen2.5-VL-3B-Instruct
+  local_files_only: true
+```
+
+3) 再运行训练命令。  
+如果你有可访问镜像，也可以设置 `model.hf_endpoint`（如 `https://hf-mirror.com`）。

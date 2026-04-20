@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib.metadata as importlib_metadata
 import json
+import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -150,6 +151,25 @@ def build_model_and_processor(cfg: dict[str, Any]):
     from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
     model_name = cfg["model"]["name_or_path"]
+    local_model_path = cfg["model"].get("local_model_path")
+    require_local = bool(cfg["model"].get("require_local_model", False))
+    hf_endpoint = cfg["model"].get("hf_endpoint")
+    hf_token = cfg["model"].get("hf_token")
+    local_files_only = bool(cfg["model"].get("local_files_only", False))
+
+    if hf_endpoint:
+        os.environ["HF_ENDPOINT"] = str(hf_endpoint)
+    os.environ.setdefault("HF_HUB_ETAG_TIMEOUT", "30")
+    os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "120")
+
+    model_ref = local_model_path if local_model_path else model_name
+    if local_model_path:
+        local_dir = Path(local_model_path)
+        if not local_dir.exists():
+            raise RuntimeError(f"local_model_path 不存在: {local_model_path}")
+        local_files_only = True
+    elif require_local:
+        raise RuntimeError("配置要求 require_local_model=true，但未设置 local_model_path。")
     use_qlora = bool(cfg["model"].get("use_qlora", True))
     strict_qlora = bool(cfg["model"].get("strict_qlora", False))
     dtype_name = str(cfg["model"].get("torch_dtype", "bfloat16"))
@@ -178,14 +198,31 @@ def build_model_and_processor(cfg: dict[str, Any]):
             use_qlora = False
     print(f"[train_lora] mode={'QLoRA' if use_qlora else 'LoRA'}")
 
-    processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForImageTextToText.from_pretrained(
-        model_name,
-        trust_remote_code=True,
-        quantization_config=quant_config,
-        torch_dtype=dtype,
-        device_map="auto",
-    )
+    try:
+        processor = AutoProcessor.from_pretrained(
+            model_ref,
+            trust_remote_code=True,
+            token=hf_token,
+            local_files_only=local_files_only,
+        )
+        model = AutoModelForImageTextToText.from_pretrained(
+            model_ref,
+            trust_remote_code=True,
+            quantization_config=quant_config,
+            torch_dtype=dtype,
+            device_map="auto",
+            token=hf_token,
+            local_files_only=local_files_only,
+        )
+    except Exception as e:
+        raise RuntimeError(
+            "加载模型失败：无法从 Hugging Face 拉取或本地模型不可用。\n"
+            f"model_ref={model_ref}, local_files_only={local_files_only}\n"
+            "解决方案：\n"
+            "1) 设置 model.local_model_path 为已下载模型目录；或\n"
+            "2) 设置 model.hf_endpoint 为可访问镜像（如 https://hf-mirror.com）；或\n"
+            "3) 先手动下载模型到本地，再用 local_files_only=true 运行。"
+        ) from e
 
     if use_qlora:
         model = prepare_model_for_kbit_training(model)
