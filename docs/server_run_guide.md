@@ -173,6 +173,10 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 - 原因：文本中未包含视觉 token（常见于未使用 chat template）
 - 当前脚本已改为 Qwen2.5-VL chat template 生成输入
 - 请先更新到最新代码再训练
+12. `Image features and image tokens do not match: tokens: 753, features ...`
+- 原因：序列截断导致 image token 被裁剪（例如 `max_length` 太小）
+- 当前脚本已改为视觉输入不截断（`truncation=False`）
+- 请更新到最新代码后重试
 
 ---
 

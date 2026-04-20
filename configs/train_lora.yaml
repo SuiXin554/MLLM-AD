@@ -45,7 +45,7 @@ train:
   eval_steps: 100
   save_steps: 100
   save_total_limit: 2
-  max_seq_length: 768
+  max_seq_length: 3072  # 仅作记录；Qwen2.5-VL 输入默认不截断，避免 image token 被裁剪
   dataloader_num_workers: 2
   gradient_checkpointing: true
   bf16: true

@@ -132,6 +132,9 @@ model:
 ### 若出现 `Image features and image tokens do not match: tokens: 0, features ...`
 这是提示词里没有正确插入图像 token。当前脚本已改为 Qwen2.5-VL chat template（包含 `{"type":"image"}`），请先更新到最新代码再运行。
 
+### 若出现 `Image features and image tokens do not match: tokens: 753, features ...`
+这是输入被截断导致 image token 数量被裁剪。当前脚本已关闭视觉输入截断（`truncation=False`），请更新到最新代码再运行。
+
 ### 若出现 `AttributeError: 'NoneType' object has no attribute 'split'`（版本检查阶段）
 执行：
 ```bash

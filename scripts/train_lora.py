@@ -181,8 +181,7 @@ class VLDataCollator:
             images=images,
             return_tensors="pt",
             padding=True,
-            truncation=True,
-            max_length=self.max_seq_length,
+            truncation=False,  # must keep full image-token span for Qwen2.5-VL
         )
 
         labels = batch["input_ids"].clone()

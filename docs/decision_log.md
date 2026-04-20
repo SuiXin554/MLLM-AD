@@ -53,3 +53,4 @@
 - 补充：版本解析函数改为容错实现，避免异常元信息导致脚本在兼容性检查阶段崩溃。
 - 补充：包版本读取优先 metadata，失败时回退到 `import xxx.__version__`，避免 `transformers=None` 误判。
 - 补充：训练输入改为 Qwen2.5-VL chat template（含 image token），修复 `tokens:0, features:...` 错配。
+- 补充：关闭视觉输入截断（`truncation=False`），修复 `tokens:753, features:...` 错配。
