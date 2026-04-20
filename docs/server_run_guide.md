@@ -120,7 +120,7 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 - 这是 `transformers>=5` 与 `torch==2.1.x` 不兼容导致
 - 不要升级 torch，执行：
   ```bash
-  pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
+  pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1"
   ```
 - 然后重新运行：
   ```bash

@@ -36,7 +36,7 @@ def check_runtime_compat() -> None:
             "当前环境是 torch<2.4 + transformers>=5，transformers 会禁用 PyTorch 后端。\n"
             f"检测到 torch={torch.__version__}, transformers={tf_v_str}。\n"
             "你不需要升级 torch，请执行以下命令降级 transformers 到 4.x：\n"
-            "  pip install --upgrade --no-deps 'transformers==4.47.1' 'tokenizers==0.21.0'"
+            "  pip install --upgrade --no-deps 'transformers==4.50.3' 'tokenizers==0.21.1'"
         )
     if tf_v < (5, 0, 0) and not ((0, 24, 0) <= hub_v < (1, 0, 0)):
         raise RuntimeError(
@@ -44,6 +44,14 @@ def check_runtime_compat() -> None:
             f"当前 transformers={tf_v_str}, huggingface-hub={hub_v_str}。\n"
             "请执行：\n"
             "  pip install --upgrade --no-deps 'huggingface-hub==0.36.0'"
+        )
+    # Qwen2.5-VL needs newer transformers than many older 4.x builds.
+    if tf_v < (4, 50, 0):
+        raise RuntimeError(
+            "当前 transformers 版本过低，不支持 qwen2_5_vl 架构。\n"
+            f"检测到 transformers={tf_v_str}。\n"
+            "请执行：\n"
+            "  pip install --upgrade --no-deps 'transformers==4.50.3' 'tokenizers==0.21.1'"
         )
     try:
         import safetensors  # noqa: F401
@@ -215,6 +223,12 @@ def build_model_and_processor(cfg: dict[str, Any]):
             local_files_only=local_files_only,
         )
     except Exception as e:
+        if "qwen2_5_vl" in str(e):
+            raise RuntimeError(
+                "检测到 `qwen2_5_vl` 架构无法识别：当前 transformers 版本过低。\n"
+                "请执行：\n"
+                "  pip install --upgrade --no-deps 'transformers==4.50.3' 'tokenizers==0.21.1'"
+            ) from e
         raise RuntimeError(
             "加载模型失败：无法从 Hugging Face 拉取或本地模型不可用。\n"
             f"model_ref={model_ref}, local_files_only={local_files_only}\n"

@@ -44,7 +44,7 @@
 
 ## 进展更新（2026-04-19 训练兼容性）
 - 用户环境为 `torch==2.1.2`，且安装了 `transformers==5.5.4`，二者不兼容会导致训练入口报错。
-- 方案：保持 PyTorch 不变，仅将 transformers/tokenizers 固定到 4.x 兼容组合。
+- 方案：保持 PyTorch 不变，仅将 transformers/tokenizers 固定到兼容 Qwen2.5-VL 的 4.50.x 组合。
 - 补充：`transformers 4.x` 需要 `huggingface-hub<1.0`，若为 1.x 需降级到 0.36.0。
 - 补充：`safetensors` 若出现 `_safe_open_handle` 导入错误，需强制重装同版本 wheel（0.4.5）。
 - 补充：若缺失 `bitsandbytes`，训练脚本默认自动从 QLoRA 降级为 LoRA，避免流程中断。

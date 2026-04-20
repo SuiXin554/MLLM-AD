@@ -84,7 +84,7 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 不需要升级 PyTorch，只要把 transformers 固定到 4.x：
 
 ```bash
-pip install --upgrade --no-deps "transformers==4.47.1" "tokenizers==0.21.0"
+pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1"
 ```
 
 ### 若出现 `huggingface-hub>=0.24,<1.0 is required ... but found 1.11.0`
