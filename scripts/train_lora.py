@@ -139,12 +139,20 @@ def _join_image_path(image_path: str, image_root: str | None) -> str:
     return str((Path(image_root) / p).resolve())
 
 
-def build_prompt(question: str, answer: str) -> str:
-    return (
-        "你是工业质检助手。请根据图像回答问题。\n"
-        f"问题：{question}\n"
-        f"答案：{answer}"
-    )
+def build_chat_messages(question: str, answer: str) -> list[dict[str, Any]]:
+    return [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image"},
+                {"type": "text", "text": f"你是工业质检助手。请根据图像回答问题：{question}"},
+            ],
+        },
+        {
+            "role": "assistant",
+            "content": [{"type": "text", "text": answer}],
+        },
+    ]
 
 
 @dataclass
@@ -157,7 +165,12 @@ class VLDataCollator:
         texts = []
         images = []
         for f in features:
-            prompt = build_prompt(f["question"], f["answer"])
+            messages = build_chat_messages(f["question"], f["answer"])
+            prompt = self.processor.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=False,
+            )
             img_path = _join_image_path(f["image"], self.image_root)
             img = Image.open(img_path).convert("RGB")
             texts.append(prompt)
@@ -274,6 +287,7 @@ def build_model_and_processor(cfg: dict[str, Any]):
         task_type="CAUSAL_LM",
     )
     model = get_peft_model(model, peft_config)
+    model.enable_input_require_grads()
     model.print_trainable_parameters()
 
     return model, processor
@@ -321,8 +335,9 @@ def main() -> None:
         bf16=bool(tcfg.get("bf16", True)),
         fp16=bool(tcfg.get("fp16", False)),
         report_to=tcfg.get("report_to", "none"),
+        label_names=["labels"],
         remove_unused_columns=False,
-        evaluation_strategy="steps" if val_ds is not None else "no",
+        eval_strategy="steps" if val_ds is not None else "no",
         save_strategy="steps",
         logging_strategy="steps",
         seed=seed,

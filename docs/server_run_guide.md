@@ -169,6 +169,10 @@ python scripts/train_lora.py --config configs/train_lora.yaml
   ```bash
   python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
   ```
+11. `Image features and image tokens do not match: tokens: 0, features ...`
+- 原因：文本中未包含视觉 token（常见于未使用 chat template）
+- 当前脚本已改为 Qwen2.5-VL chat template 生成输入
+- 请先更新到最新代码再训练
 
 ---
 

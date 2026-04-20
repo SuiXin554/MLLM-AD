@@ -129,6 +129,9 @@ model:
 3) 再运行训练命令。  
 如果你有可访问镜像，也可以设置 `model.hf_endpoint`（如 `https://hf-mirror.com`）。
 
+### 若出现 `Image features and image tokens do not match: tokens: 0, features ...`
+这是提示词里没有正确插入图像 token。当前脚本已改为 Qwen2.5-VL chat template（包含 `{"type":"image"}`），请先更新到最新代码再运行。
+
 ### 若出现 `AttributeError: 'NoneType' object has no attribute 'split'`（版本检查阶段）
 执行：
 ```bash
