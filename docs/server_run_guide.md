@@ -99,6 +99,17 @@ python scripts/train_lora.py --config configs/train_lora.yaml
 
 ---
 
+## 7. 训练后评测（已可直接运行）
+```bash
+python scripts/evaluate.py --config configs/eval_config.yaml
+```
+
+成功标志：
+- 控制台输出 abnormal / defect_type / location 三项指标
+- `outputs/logs/eval_metrics.json` 与 `outputs/logs/eval_cases.jsonl` 生成
+
+---
+
 ## 常见报错与排查
 1. `FileNotFoundError`（找不到数据路径）
 - 检查 `configs/data_config.yaml`

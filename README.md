@@ -145,3 +145,14 @@ pip install --upgrade --no-deps "transformers==4.50.3" "tokenizers==0.21.1" "hug
 ```bash
 python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
 ```
+
+## 8. 训练后下一步：评测（需要用户在本地/服务器执行）
+```bash
+python scripts/evaluate.py --config configs/eval_config.yaml
+```
+
+预期输出：
+- 控制台打印三任务指标（异常/缺陷类型/位置）
+- 生成：
+  - `outputs/logs/eval_metrics.json`
+  - `outputs/logs/eval_cases.jsonl`

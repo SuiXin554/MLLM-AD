@@ -1,0 +1,16 @@
+seed: 42
+
+data:
+  val_jsonl: data/processed/val.jsonl
+  max_samples: 200
+
+model:
+  base_model: /home/ljh/MLLM-AD/Qwen2.5-VL-3B-Instruct
+  lora_adapter: outputs/checkpoints/qwen25vl_lora
+  local_files_only: true
+  device: cuda
+  max_new_tokens: 64
+
+output:
+  metrics_json: outputs/logs/eval_metrics.json
+  cases_jsonl: outputs/logs/eval_cases.jsonl
